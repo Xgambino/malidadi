@@ -6,6 +6,7 @@ import ShippingForm from './components/ShippingForm';
 import PaymentForm from './components/PaymentForm';
 import OrderReview from './components/OrderReview';
 import OrderSummary from './components/OrderSummary';
+import NavigationHeader from "components/ui/NavigationHeader";
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -74,9 +75,9 @@ const CheckoutPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <CheckoutHeader />
-      
-      <div className="container mx-auto px-4 md:px-6 lg:px-8 py-8">
+      <NavigationHeader/>
+
+      <div className="container mx-auto px-4 md:px-6 lg:px-8 py-8 pt-20">
         {/* Progress Indicator - Mobile and Desktop */}
         <div className="max-w-2xl mx-auto lg:max-w-none mb-8">
           <ProgressIndicator currentStep={currentStep} totalSteps={3} />

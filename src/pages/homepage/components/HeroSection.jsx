@@ -57,7 +57,7 @@ const HeroSection = () => {
   const currentHero = luxurySlides?.[currentSlide];
 
   return (
-    <section className="relative h-screen overflow-hidden">
+    <section className="relative h-screen overflow-hidden pt-20">
       {/* Background Gradient */}
       <div className={`absolute inset-0 bg-gradient-to-br ${currentHero?.bgGradient} transition-all duration-1000`} />
       

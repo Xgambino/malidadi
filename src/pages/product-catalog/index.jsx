@@ -335,7 +335,7 @@ const ProductCatalog = () => {
         cartCount={cartCount}
         onSearchSubmit={handleSearchSubmit}
       />
-      <div className="container mx-auto px-4 md:px-6 lg:px-8 py-6">
+      <div className="container mx-auto px-4 md:px-6 lg:px-8 py-6 pt-20">
         <BreadcrumbNavigation className="mb-6" />
 
         <div className="flex gap-6">

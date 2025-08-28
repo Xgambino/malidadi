@@ -80,19 +80,20 @@ const NavigationHeader = ({ cartCount = 0, currentUser = null, onSearchSubmit = 
       }`}>
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
-            {/* Luxury Logo */}
+            {/* Malidadi Logo */}
             <Link 
               to="/homepage" 
               className="flex items-center space-x-3 group transition-all duration-300"
               onClick={closeMobileMenu}
             >
-              <div className="w-10 h-10 bg-gradient-to-br from-primary to-yellow-400 rounded-lg flex items-center justify-center shadow-luxury group-hover:scale-110 transition-transform duration-300">
-                <Icon name="Crown" size={24} color="black" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-xl font-luxury font-bold text-gradient-gold">LUXURIA</span>
-                <span className="text-xs font-light text-muted-foreground tracking-wider">PREMIUM COLLECTION</span>
-              </div>
+              <div className="w-[190px] h-[auto] rounded-lg overflow-hidden group-hover:scale-110 transition-transform duration-300">
+  <img 
+    src="/assets/images/logoi.png" 
+    alt="Malidadi Logo" 
+    className="w-full h-full object-contain"
+  />
+</div>
+
             </Link>
 
             {/* Desktop Navigation */}

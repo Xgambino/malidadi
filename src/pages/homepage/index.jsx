@@ -80,20 +80,20 @@ const Homepage = () => {
   return (
     <>
       <Helmet>
-        <title>LUXURIA - Premium Luxury Collection | Exquisite Craftsmanship</title>
+        <title>Malidadi - Premium Luxury Collection | Exquisite Craftsmanship</title>
         <meta 
           name="description" 
-          content="Discover the pinnacle of luxury with LUXURIA's curated collection of premium timepieces, jewelry, and exclusive accessories. Handcrafted excellence for the discerning connoisseur." 
+          content="Discover the pinnacle of luxury with Malidadi's curated collection of premium timepieces, jewelry, and exclusive accessories. Handcrafted excellence for the discerning connoisseur." 
         />
         <meta name="keywords" content="luxury, premium, timepieces, jewelry, exclusive, handcrafted, luxury goods, high-end, artisan, curated collection" />
-        <meta property="og:title" content="LUXURIA - Premium Luxury Collection | Exquisite Craftsmanship" />
+        <meta property="og:title" content="Malidadi - Premium Luxury Collection | Exquisite Craftsmanship" />
         <meta property="og:description" content="Experience the epitome of luxury with our exclusive collection of premium goods, crafted for the most discerning clientele." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://luxuria.com" />
+        <meta property="og:url" content="https://malidadi.com" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="LUXURIA - Premium Luxury Collection" />
+        <meta name="twitter:title" content="Malidadi - Premium Luxury Collection" />
         <meta name="twitter:description" content="Discover handcrafted luxury goods and exclusive collections for the discerning connoisseur." />
-        <link rel="canonical" href="https://luxuria.com" />
+        <link rel="canonical" href="https://malidadi.com" />
       </Helmet>
 
       <div className="min-h-screen bg-background">
@@ -125,7 +125,7 @@ const Homepage = () => {
                 </h2>
                 
                 <p className="text-xl md:text-2xl text-gray-300 font-light leading-relaxed mb-12 max-w-3xl mx-auto">
-                  For over a century, LUXURIA has been the epitome of sophistication, creating extraordinary pieces that transcend time and define true luxury. Each creation is a testament to uncompromising quality and exclusive artisanship.
+                  For over the years, Malidadi has been the epitome of sophistication, creating extraordinary pieces that transcend time and define true luxury. Each creation is a testament to uncompromising quality and exclusive artisanship.
                 </p>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">

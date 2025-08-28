@@ -1,10 +1,12 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import Icon from '../../../components/AppIcon';
+import React from "react";
+import { Link } from "react-router-dom";
+import Icon from "../../../components/AppIcon";
 
 const Footer = () => {
   const currentYear = new Date()?.getFullYear();
-
+ const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
   const footerSections = [
     {
       title: "Shop",
@@ -13,8 +15,8 @@ const Footer = () => {
         { label: "Electronics", href: "/product-catalog" },
         { label: "Fashion", href: "/product-catalog" },
         { label: "Home & Garden", href: "/product-catalog" },
-        { label: "Sports", href: "/product-catalog" }
-      ]
+        { label: "Sports", href: "/product-catalog" },
+      ],
     },
     {
       title: "Customer Service",
@@ -23,8 +25,8 @@ const Footer = () => {
         { label: "FAQ", href: "#" },
         { label: "Shipping Info", href: "#" },
         { label: "Returns", href: "#" },
-        { label: "Size Guide", href: "#" }
-      ]
+        { label: "Size Guide", href: "#" },
+      ],
     },
     {
       title: "Company",
@@ -33,8 +35,8 @@ const Footer = () => {
         { label: "Careers", href: "#" },
         { label: "Press", href: "#" },
         { label: "Sustainability", href: "#" },
-        { label: "Investors", href: "#" }
-      ]
+        { label: "Investors", href: "#" },
+      ],
     },
     {
       title: "Legal",
@@ -43,9 +45,9 @@ const Footer = () => {
         { label: "Terms of Service", href: "#" },
         { label: "Cookie Policy", href: "#" },
         { label: "Accessibility", href: "#" },
-        { label: "Sitemap", href: "#" }
-      ]
-    }
+        { label: "Sitemap", href: "#" },
+      ],
+    },
   ];
 
   const socialLinks = [
@@ -53,7 +55,7 @@ const Footer = () => {
     { name: "Twitter", icon: "Twitter", href: "#" },
     { name: "Instagram", icon: "Instagram", href: "#" },
     { name: "Youtube", icon: "Youtube", href: "#" },
-    { name: "LinkedIn", icon: "Linkedin", href: "#" }
+    { name: "LinkedIn", icon: "Linkedin", href: "#" },
   ];
 
   const paymentMethods = [
@@ -61,7 +63,7 @@ const Footer = () => {
     { name: "Mastercard", icon: "CreditCard" },
     { name: "PayPal", icon: "Wallet" },
     { name: "Apple Pay", icon: "Smartphone" },
-    { name: "Google Pay", icon: "Smartphone" }
+    { name: "Google Pay", icon: "Smartphone" },
   ];
 
   return (
@@ -71,16 +73,24 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12">
           {/* Brand Section */}
           <div className="lg:col-span-1">
-            <Link to="/homepage" className="flex items-center space-x-2 mb-6">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <Icon name="ShoppingBag" size={20} color="white" />
+            <Link
+              to="/homepage"
+              className="flex items-center space-x-3 group transition-all duration-300"
+              onClick={closeMobileMenu}
+            >
+              <div className="w-[190px] h-[auto] rounded-lg overflow-hidden group-hover:scale-110 transition-transform duration-300">
+                <img
+                  src="/assets/images/logoi.png"
+                  alt="Malidadi Logo"
+                  className="w-full h-full object-contain"
+                />
               </div>
-              <span className="text-xl font-bold text-foreground">ReactCommerce</span>
             </Link>
-            
+
             <p className="text-muted-foreground text-sm mb-6 max-w-sm">
-              Your trusted online shopping destination for quality products at competitive prices. 
-              Discover amazing deals and exceptional customer service.
+              Your trusted online shopping destination for quality african products at
+              competitive prices. Discover amazing deals and exceptional
+              customer service.
             </p>
 
             {/* Social Links */}
@@ -92,10 +102,10 @@ const Footer = () => {
                   className="w-10 h-10 bg-muted hover:bg-primary rounded-lg flex items-center justify-center transition-colors duration-200 group"
                   aria-label={social?.name}
                 >
-                  <Icon 
-                    name={social?.icon} 
-                    size={18} 
-                    className="text-muted-foreground group-hover:text-white transition-colors duration-200" 
+                  <Icon
+                    name={social?.icon}
+                    size={18}
+                    className="text-muted-foreground group-hover:text-white transition-colors duration-200"
                   />
                 </a>
               ))}
@@ -135,7 +145,7 @@ const Footer = () => {
                 Get the latest updates on new products and exclusive offers.
               </p>
             </div>
-            
+
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 <Icon name="Shield" size={16} className="text-success" />
@@ -158,12 +168,12 @@ const Footer = () => {
         <div className="container mx-auto px-4 md:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
             {/* Copyright */}
-            <div className="text-sm text-muted-foreground">
+            {/* <div className="text-sm text-muted-foreground">
               © {currentYear} ReactCommerce. All rights reserved.
-            </div>
+            </div> */}
 
             {/* Payment Methods */}
-            <div className="flex items-center space-x-4">
+            {/* <div className="flex items-center space-x-4">
               <span className="text-sm text-muted-foreground">We accept:</span>
               <div className="flex items-center space-x-2">
                 {paymentMethods?.map((method) => (
@@ -172,18 +182,18 @@ const Footer = () => {
                     className="w-8 h-8 bg-surface border border-border rounded flex items-center justify-center"
                     title={method?.name}
                   >
-                    <Icon 
-                      name={method?.icon} 
-                      size={14} 
-                      className="text-muted-foreground" 
+                    <Icon
+                      name={method?.icon}
+                      size={14}
+                      className="text-muted-foreground"
                     />
                   </div>
                 ))}
               </div>
-            </div>
+            </div> */}
 
             {/* Trust Badges */}
-            <div className="flex items-center space-x-4">
+            {/* <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2 text-xs text-muted-foreground">
                 <Icon name="Lock" size={14} className="text-success" />
                 <span>SSL Secured</span>
@@ -192,7 +202,7 @@ const Footer = () => {
                 <Icon name="Award" size={14} className="text-success" />
                 <span>Trusted Store</span>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

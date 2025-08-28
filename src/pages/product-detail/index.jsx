@@ -192,7 +192,7 @@ const ProductDetail = () => {
     return (
       <div className="min-h-screen bg-background">
         <NavigationHeader cartCount={cartCount} onSearchSubmit={handleSearchSubmit} />
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-8 pt-20">
           <div className="animate-pulse space-y-8">
             <div className="h-4 bg-muted rounded w-1/3"></div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -214,7 +214,7 @@ const ProductDetail = () => {
   return (
     <div className="min-h-screen bg-background">
       <NavigationHeader cartCount={cartCount} onSearchSubmit={handleSearchSubmit} />
-      <main className="container mx-auto px-4 py-6 space-y-8">
+      <main className="container mx-auto px-4 py-6 space-y-8  pt-20">
         {/* Breadcrumb Navigation */}
         <BreadcrumbNavigation productData={currentProduct} />
 

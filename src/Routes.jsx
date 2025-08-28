@@ -11,6 +11,7 @@ import Homepage from './pages/homepage';
 import AdminDashboard from './pages/admin-dashboard';
 import ProductManagement from './pages/product-management';
 import ProductForm from './pages/product-form';
+import LoginRegister from "pages/login-register";
 
 const Routes = () => {
   return (
@@ -19,7 +20,8 @@ const Routes = () => {
       <ScrollToTop />
       <RouterRoutes>
         {/* Define your route here */}
-        <Route path="/" element={<CheckoutPage />} />
+        <Route path="/login" element={<LoginRegister />} />
+        <Route path="/" element={<Homepage />} />
         <Route path="/shopping-cart" element={<ShoppingCart />} />
         <Route path="/product-detail" element={<ProductDetail />} />
         <Route path="/product-catalog" element={<ProductCatalog />} />
