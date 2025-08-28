@@ -1,70 +1,90 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import Image from '../../../components/AppImage';
-import Icon from '../../../components/AppIcon';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import Image from "../../../components/AppImage";
+import Icon from "../../../components/AppIcon";
+
+import { products } from "../../../data/db";
 
 const CategorySection = () => {
   const navigate = useNavigate();
-
-  const categories = [
-    {
-      id: 1,
-      name: "Electronics",
-      description: "Latest gadgets and tech accessories",
-      image: "https://images.unsplash.com/photo-1498049794561-7780e7231661?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-      icon: "Smartphone",
-      productCount: 156,
-      color: "from-blue-500 to-purple-600"
+  const categoryStyles = {
+    "African Inspired Jewellery": {
+      icon: "Gem",
+      color: "from-pink-500 to-rose-600",
+      image:
+        "https://turkanawildlifesafaris.com/wp-content/uploads/2025/05/maasai2.jpg",
     },
-    {
-      id: 2,
-      name: "Fashion",
-      description: "Trendy clothing and accessories",
-      image: "https://images.pexels.com/photos/996329/pexels-photo-996329.jpeg?auto=compress&cs=tinysrgb&w=1000&q=80",
+    Clothing: {
       icon: "Shirt",
-      productCount: 234,
-      color: "from-pink-500 to-rose-600"
+      color: "from-blue-500 to-indigo-600",
+      image: "https://pbs.twimg.com/media/FTlyf54WYAAvxYT.jpg",
     },
-    {
-      id: 3,
-      name: "Home & Garden",
-      description: "Everything for your living space",
-      image: "https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=1000&q=80",
-      icon: "Home",
-      productCount: 189,
-      color: "from-green-500 to-emerald-600"
+    "Authentic Leather Wear": {
+      icon: "ShoppingBag",
+      color: "from-yellow-600 to-amber-700",
+      image:
+        "https://sarunibasecamp.com/wp-content/uploads/2024/11/Saruni-Basecamp-From-Beads-to-Leather-8.jpg",
     },
-    {
-      id: 4,
-      name: "Sports & Outdoors",
-      description: "Gear for active lifestyle",
-      image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-      icon: "Dumbbell",
-      productCount: 98,
-      color: "from-orange-500 to-red-600"
+    "African Inspired Crafts": {
+      icon: "Palette",
+      color: "from-green-600 to-emerald-700",
+      image:
+        "https://imaraafricasafaris.com/wp-content/uploads/2020/11/image-123-1000x565.png.webp",
     },
-    {
-      id: 5,
-      name: "Books & Media",
-      description: "Knowledge and entertainment",
-      image: "https://images.pexels.com/photos/159711/books-bookstore-book-reading-159711.jpeg?auto=compress&cs=tinysrgb&w=1000&q=80",
-      icon: "Book",
-      productCount: 267,
-      color: "from-indigo-500 to-blue-600"
+    "Cultural Wear": {
+      icon: "Feather",
+      color: "from-purple-500 to-fuchsia-600",
+      image:
+        "https://static.vecteezy.com/system/resources/previews/028/835/984/large_2x/masai-in-traditional-colorful-clothing-showing-maasai-jumping-dance-at-local-tribe-village-near-famous-safari-travel-destination-kenya-editorial-free-photo.JPG",
     },
-    {
-      id: 6,
-      name: "Beauty & Care",
-      description: "Personal care and wellness",
-      image: "https://images.pexels.com/photos/3685530/pexels-photo-3685530.jpeg?auto=compress&cs=tinysrgb&w=1000&q=80",
+    Women: {
       icon: "Heart",
-      productCount: 143,
-      color: "from-purple-500 to-pink-600"
-    }
-  ];
+      color: "from-rose-500 to-pink-600",
+      image:
+        "https://i.pinimg.com/236x/ee/e0/16/eee016e512bde92427da3267f34de33b.jpg",
+    },
+    Men: {
+      icon: "User",
+      color: "from-gray-600 to-gray-800",
+      image:
+        "https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/01/30/16/gettyimages-117126116.jpg",
+    },
+    Kids: {
+      icon: "Baby",
+      color: "from-teal-400 to-cyan-500",
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQh0NJqRp70T5R7HaRvrnvihCGCqOADA61_o2dqzoil1V_usa9PHCbGeP3Fl7rm1JFtKAg&usqp=CAU",
+    },
+  };
+
+  // Build categories dynamically
+  const categories = Array.from(
+    new Map(
+      products
+        .flatMap((p) => p.categories)
+        .map((name, index) => [
+          name,
+          {
+            id: index + 1,
+            name,
+            description: `Explore our collection of ${name}`,
+            image:
+              categoryStyles[name]?.image ||
+              products.find((p) => p.categories.includes(name))?.image,
+
+            color: categoryStyles[name]?.color || "from-gray-500 to-gray-700",
+            icon: categoryStyles[name]?.icon || "Tag",
+            productCount: products.filter((p) => p.categories.includes(name))
+              .length,
+          },
+        ])
+    ).values()
+  );
 
   const handleCategoryClick = (category) => {
-    navigate('/product-catalog', { state: { selectedCategory: category?.name?.toLowerCase() } });
+    navigate("/product-catalog", {
+      state: { selectedCategory: category?.name?.toLowerCase() },
+    });
   };
 
   return (
@@ -81,7 +101,7 @@ const CategorySection = () => {
         </div>
 
         {/* Categories Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           {categories?.map((category) => (
             <div
               key={category?.id}
@@ -95,7 +115,9 @@ const CategorySection = () => {
                   alt={category?.name}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
-                <div className={`absolute inset-0 bg-gradient-to-br ${category?.color} opacity-75 group-hover:opacity-85 transition-opacity duration-300`} />
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${category?.color} opacity-75 group-hover:opacity-85 transition-opacity duration-300`}
+                />
               </div>
 
               {/* Content Overlay */}
@@ -104,7 +126,11 @@ const CategorySection = () => {
                   {/* Icon */}
                   <div className="mb-4">
                     <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
-                      <Icon name={category?.icon} size={24} className="text-white" />
+                      <Icon
+                        name={category?.icon}
+                        size={24}
+                        className="text-white"
+                      />
                     </div>
                   </div>
 
@@ -115,7 +141,7 @@ const CategorySection = () => {
                   <p className="text-white/90 text-sm md:text-base mb-3">
                     {category?.description}
                   </p>
-                  
+
                   {/* Product Count */}
                   <div className="flex items-center justify-between">
                     <span className="text-white/80 text-sm">
@@ -123,10 +149,10 @@ const CategorySection = () => {
                     </span>
                     <div className="flex items-center space-x-2 text-sm font-medium">
                       <span>Explore</span>
-                      <Icon 
-                        name="ArrowRight" 
-                        size={16} 
-                        className="transform transition-transform duration-300 group-hover:translate-x-1" 
+                      <Icon
+                        name="ArrowRight"
+                        size={16}
+                        className="transform transition-transform duration-300 group-hover:translate-x-1"
                       />
                     </div>
                   </div>
@@ -142,7 +168,7 @@ const CategorySection = () => {
         {/* View All Categories Button */}
         <div className="text-center mt-12">
           <button
-            onClick={() => navigate('/product-catalog')}
+            onClick={() => navigate("/product-catalog")}
             className="inline-flex items-center space-x-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors duration-200"
           >
             <span>View All Categories</span>

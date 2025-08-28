@@ -1,12 +1,66 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import Button from "../../../components/ui/Button";
+import Input from "../../../components/ui/Input";
 import Icon from "../../../components/AppIcon";
+import emailjs from "emailjs-com";
 
 const Footer = () => {
   const currentYear = new Date()?.getFullYear();
- const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
+  const [email, setEmail] = useState("");
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError("");
+  setIsSubscribed(false);
+
+  // ✅ Stronger email validation with regex
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!email) {
+    setError("Please enter your email address");
+    return;
+  }
+  if (!emailRegex.test(email)) {
+    setError("Please enter a valid email address");
+    return;
+  }
+
+  setIsLoading(true);
+
+  try {
+    await emailjs.send(
+  import.meta.env.VITE_EMAILJS_SERVICE_ID,
+  import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+  {
+    email: "malidadikenya@gmail.com",
+    from_name: "Malidadi Website",
+    from_email: email
+  },
+  import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+);
+
+    setIsSubscribed(true);
+    setEmail("");
+
+    // ❌ Instead of auto-resetting after 5s,
+    // keep success visible until user types again
+    // setTimeout(() => setIsSubscribed(false), 5000);
+  } catch (err) {
+    console.error("EmailJS error:", err);
+    setError(err?.text || err?.message || "Failed to send email");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+  const handleEmailChange = (e) => {
+    setEmail(e?.target?.value);
+    if (error) setError("");
   };
+
   const footerSections = [
     {
       title: "Shop",
@@ -51,11 +105,11 @@ const Footer = () => {
   ];
 
   const socialLinks = [
-    { name: "Facebook", icon: "Facebook", href: "#" },
-    { name: "Twitter", icon: "Twitter", href: "#" },
-    { name: "Instagram", icon: "Instagram", href: "#" },
-    { name: "Youtube", icon: "Youtube", href: "#" },
-    { name: "LinkedIn", icon: "Linkedin", href: "#" },
+    { name: "Facebook", icon: "Facebook", href: "https://facebook.com" },
+    { name: "Twitter", icon: "Twitter", href: "https://twitter.com" },
+    { name: "Instagram", icon: "Instagram", href: "https://instagram.com" },
+    { name: "Youtube", icon: "Youtube", href: "https://youtube.com" },
+    { name: "LinkedIn", icon: "Linkedin", href: "https://linkedin.com" },
   ];
 
   const paymentMethods = [
@@ -66,9 +120,10 @@ const Footer = () => {
     { name: "Google Pay", icon: "Smartphone" },
   ];
 
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
+
   return (
     <footer className="bg-surface border-t border-border">
-      {/* Main Footer Content */}
       <div className="container mx-auto px-4 md:px-6 lg:px-8 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12">
           {/* Brand Section */}
@@ -76,7 +131,6 @@ const Footer = () => {
             <Link
               to="/homepage"
               className="flex items-center space-x-3 group transition-all duration-300"
-              onClick={closeMobileMenu}
             >
               <div className="w-[190px] h-[auto] rounded-lg overflow-hidden group-hover:scale-110 transition-transform duration-300">
                 <img
@@ -88,9 +142,9 @@ const Footer = () => {
             </Link>
 
             <p className="text-muted-foreground text-sm mb-6 max-w-sm">
-              Your trusted online shopping destination for quality african products at
-              competitive prices. Discover amazing deals and exceptional
-              customer service.
+              Your trusted online shopping destination for quality African
+              products at competitive prices. Discover amazing deals and
+              exceptional customer service.
             </p>
 
             {/* Social Links */}
@@ -99,6 +153,8 @@ const Footer = () => {
                 <a
                   key={social?.name}
                   href={social?.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-10 h-10 bg-muted hover:bg-primary rounded-lg flex items-center justify-center transition-colors duration-200 group"
                   aria-label={social?.name}
                 >
@@ -109,6 +165,40 @@ const Footer = () => {
                   />
                 </a>
               ))}
+            </div>
+
+            {/* Payment Methods */}
+            <div className="flex items-center space-x-3 mt-6">
+              {paymentMethods.map((method) => (
+                <div
+                  key={method.name}
+                  className="w-10 h-10 flex items-center justify-center"
+                >
+                  <Icon name={method.icon} size={24} title={method.name} />
+                </div>
+              ))}
+            </div>
+
+            {/* Contact Info */}
+            <div className="mt-6 text-muted-foreground text-sm">
+              <p>
+                Email:{" "}
+                <a
+                  href="mailto:support@malidadi.com"
+                  className="text-primary hover:underline"
+                >
+                  support@malidadi.com
+                </a>
+              </p>
+              <p>
+                Phone:{" "}
+                <a
+                  href="tel:+254700000000"
+                  className="text-primary hover:underline"
+                >
+                  +254 700 000 000
+                </a>
+              </p>
             </div>
           </div>
 
@@ -146,64 +236,67 @@ const Footer = () => {
               </p>
             </div>
 
-            <div className="flex items-center space-x-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {isSubscribed && !isLoading ? (
+                <p className="text-success mt-2 text-sm">
+                  Thank you! You have successfully subscribed to our emails.
+                </p>
+              ) : (
+                <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                  <div className="flex-1">
+                    <Input
+                      type="email"
+                      placeholder="Enter your email address"
+                      value={email}
+                      onChange={handleEmailChange}
+                      error={error}
+                      className="bg-white/10 border-white/30 text-white placeholder:text-white/70 focus:bg-white/20"
+                    />
+                  </div>
+                  <Button
+                    type="submit"
+                    variant="default"
+                    loading={isLoading}
+                    disabled={isLoading}
+                    iconName="Send"
+                    iconPosition="right"
+                    iconSize={16}
+                    className="bg-white text-primary hover:bg-white/90 font-semibold px-6 sm:px-8"
+                  >
+                    {isLoading ? "Subscribing..." : "Subscribe"}
+                  </Button>
+                </div>
+              )}
+            </form>
+
+            <div className="flex items-center space-x-4 mt-4 md:mt-0">
               <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 <Icon name="Shield" size={16} className="text-success" />
                 <span>Secure Shopping</span>
               </div>
               <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 <Icon name="Truck" size={16} className="text-success" />
-                <span>Free Shipping</span>
-              </div>
-              <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                <Icon name="RotateCcw" size={16} className="text-success" />
-                <span>Easy Returns</span>
+                <span>Free Shipping In Nairobi</span>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      {/* Bottom Footer */}
-      <div className="border-t border-border bg-muted/30">
-        <div className="container mx-auto px-4 md:px-6 lg:px-8 py-6">
-          <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
-            {/* Copyright */}
-            {/* <div className="text-sm text-muted-foreground">
-              © {currentYear} ReactCommerce. All rights reserved.
-            </div> */}
 
-            {/* Payment Methods */}
-            {/* <div className="flex items-center space-x-4">
-              <span className="text-sm text-muted-foreground">We accept:</span>
-              <div className="flex items-center space-x-2">
-                {paymentMethods?.map((method) => (
-                  <div
-                    key={method?.name}
-                    className="w-8 h-8 bg-surface border border-border rounded flex items-center justify-center"
-                    title={method?.name}
-                  >
-                    <Icon
-                      name={method?.icon}
-                      size={14}
-                      className="text-muted-foreground"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div> */}
+        {/* Back to Top */}
+        <div className="mt-8 text-center">
+          <Button
+            type="button"
+            onClick={scrollToTop}
+            variant="ghost"
+            className="text-muted-foreground hover:text-primary text-sm"
+          >
+            Back to Top ↑
+          </Button>
+        </div>
 
-            {/* Trust Badges */}
-            {/* <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2 text-xs text-muted-foreground">
-                <Icon name="Lock" size={14} className="text-success" />
-                <span>SSL Secured</span>
-              </div>
-              <div className="flex items-center space-x-2 text-xs text-muted-foreground">
-                <Icon name="Award" size={14} className="text-success" />
-                <span>Trusted Store</span>
-              </div>
-            </div> */}
-          </div>
+        {/* Footer Bottom */}
+        <div className="mt-6 text-center text-muted-foreground text-sm">
+          &copy; {currentYear} Malidadi. All rights reserved.
         </div>
       </div>
     </footer>
