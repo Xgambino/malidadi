@@ -3,7 +3,7 @@ export const products = [
     id: 1,
     name: "Beaded Necklace",
     description:
-      "Handmade Maasai beaded necklace crafted from recycled brass and beads.",
+      "A stunning Maasai-inspired necklace, meticulously handcrafted using vibrant recycled beads and brass accents. Each piece tells a story of tradition and artistry, making it not only a fashion accessory but also a cultural statement. Perfect for adding a bold, colorful touch to any outfit.",
     brand: "Maasai Creations",
     price: 2500,
     originalPrice: 3000,
@@ -16,12 +16,19 @@ export const products = [
     isNew: true,
     inStock: true,
     isOnSale: true,
+    reviews: [
+      {
+        name: "Amina K.",
+        rating: 5,
+        comment: "Absolutely love this necklace! The craftsmanship is amazing and it adds a beautiful pop of color to any outfit."
+      }
+    ]
   },
   {
     id: 2,
     name: "Brass Earrings",
     description:
-      "Elegant recycled brass earrings with African-inspired design.",
+      "Exquisite recycled brass earrings featuring intricate African-inspired patterns. Lightweight yet durable, these earrings are perfect for elevating both casual and formal looks. Handmade by skilled Nairobi artisans, each pair showcases cultural heritage with contemporary elegance.",
     brand: "Nairobi Artisans",
     price: 1500,
     originalPrice: 1800,
@@ -34,11 +41,19 @@ export const products = [
     isNew: false,
     inStock: true,
     isOnSale: true,
+    reviews: [
+      {
+        name: "Sophia M.",
+        rating: 4,
+        comment: "Lovely earrings, very lightweight and elegant. They go well with both casual and formal outfits."
+      }
+    ]
   },
   {
     id: 3,
     name: "Ankara Kimono",
-    description: "Colorful ankara kimono for a bold African-inspired look.",
+    description:
+      "This vibrant Ankara kimono blends traditional African prints with modern fashion sensibilities. Hand-sewn from high-quality cotton fabric, it offers comfort and style for everyday wear or special occasions. A statement piece that celebrates African artistry and color.",
     brand: "Ankara Styles",
     price: 4200,
     originalPrice: 4800,
@@ -51,11 +66,19 @@ export const products = [
     isNew: true,
     inStock: true,
     isOnSale: true,
+    reviews: [
+      {
+        name: "Lydia T.",
+        rating: 5,
+        comment: "Beautiful kimono, very comfortable and vibrant. I get compliments every time I wear it!"
+      }
+    ]
   },
   {
     id: 4,
     name: "Ankara Dress",
-    description: "Iconic African dress made with premium ankara fabric.",
+    description:
+      "An iconic African dress crafted from premium Ankara fabric. This elegant piece is designed to accentuate your silhouette while showcasing vibrant, culturally rich patterns. Perfect for weddings, cultural celebrations, or high-fashion events.",
     brand: "African Couture",
     price: 5500,
     originalPrice: 6000,
@@ -68,11 +91,19 @@ export const products = [
     isNew: false,
     inStock: true,
     isOnSale: true,
+    reviews: [
+      {
+        name: "Grace N.",
+        rating: 5,
+        comment: "Absolutely stunning dress! The fabric quality is premium and fits perfectly for special occasions."
+      }
+    ]
   },
   {
     id: 5,
     name: "Leather Sandals",
-    description: "Authentic Maasai-inspired handmade leather sandals.",
+    description:
+      "Handcrafted leather sandals inspired by Maasai traditions. Made from high-quality leather, they are durable, comfortable, and versatile. The sandals feature intricate beadwork, blending functional footwear with artisanal African artistry.",
     brand: "Safari Leatherworks",
     price: 2800,
     originalPrice: 3200,
@@ -85,11 +116,19 @@ export const products = [
     isNew: true,
     inStock: true,
     isOnSale: true,
+    reviews: [
+      {
+        name: "Daniel K.",
+        rating: 4,
+        comment: "Very comfortable and stylish sandals. The beadwork is a nice touch. Highly recommend!"
+      }
+    ]
   },
   {
     id: 6,
     name: "Beaded Leather Belt",
-    description: "Handcrafted leather belt with colorful Maasai beadwork.",
+    description:
+      "A premium handcrafted leather belt adorned with colorful Maasai beadwork. Each belt represents a fusion of traditional craftsmanship and modern fashion, making it a unique accessory for both casual and formal outfits.",
     brand: "Heritage Crafts",
     price: 3500,
     originalPrice: 3900,
@@ -102,12 +141,19 @@ export const products = [
     isNew: false,
     inStock: true,
     isOnSale: true,
+    reviews: [
+      {
+        name: "Mark A.",
+        rating: 4,
+        comment: "Beautiful belt, looks great with casual and formal attire. Beadwork is very detailed."
+      }
+    ]
   },
   {
     id: 7,
     name: "Wooden Sculpture",
     description:
-      "Hand-carved African warrior sculpture made from mahogany wood.",
+      "A meticulously hand-carved African warrior sculpture crafted from premium mahogany wood. This decorative piece embodies strength, tradition, and artistry, making it a perfect centerpiece for home or office décor with cultural depth.",
     brand: "Kisii Woodcarvers",
     price: 7000,
     originalPrice: 7500,
@@ -120,11 +166,19 @@ export const products = [
     isNew: true,
     inStock: true,
     isOnSale: true,
+    reviews: [
+      {
+        name: "Alice W.",
+        rating: 5,
+        comment: "Incredible craftsmanship! This sculpture adds character to my living room."
+      }
+    ]
   },
   {
     id: 8,
     name: "Wall Hanging",
-    description: "African beadwork wall hanging, perfect for home decor.",
+    description:
+      "A decorative wall hanging featuring intricate African beadwork. Each piece is handcrafted to bring warmth, color, and cultural charm into your home. Ideal for adding a sophisticated ethnic touch to living spaces, offices, or galleries.",
     brand: "Tribal Decor",
     price: 4800,
     originalPrice: 5200,
@@ -137,11 +191,19 @@ export const products = [
     isNew: false,
     inStock: true,
     isOnSale: true,
+    reviews: [
+      {
+        name: "Betty L.",
+        rating: 5,
+        comment: "Beautiful wall hanging, brightens up my living space and looks authentic."
+      }
+    ]
   },
   {
     id: 9,
     name: "Maasai Shúkà",
-    description: "Traditional Maasai shúkà cloth, symbolic and versatile.",
+    description:
+      "Traditional Maasai shúkà cloth made from premium fabric. Rich in symbolism and versatile in use, it can be worn as a wrap, shawl, or draped garment. Celebrates Maasai heritage while offering contemporary style for cultural enthusiasts.",
     brand: "Maasai Heritage",
     price: 3200,
     originalPrice: 3500,
@@ -154,11 +216,19 @@ export const products = [
     isNew: true,
     inStock: true,
     isOnSale: true,
+    reviews: [
+      {
+        name: "John M.",
+        rating: 5,
+        comment: "Soft and vibrant fabric, very authentic Maasai design. Love it!"
+      }
+    ]
   },
   {
     id: 10,
     name: "Nigerian Agbada",
-    description: "Classic Nigerian agbada outfit for cultural occasions.",
+    description:
+      "A classic Nigerian agbada ensemble, exquisitely tailored for cultural ceremonies and formal events. Made with luxurious fabric and intricate embroidery, this outfit reflects heritage, elegance, and timeless African fashion for men and young boys.",
     brand: "Naija Styles",
     price: 15000,
     originalPrice: 16000,
@@ -171,8 +241,16 @@ export const products = [
     isNew: false,
     inStock: true,
     isOnSale: true,
-  },
+    reviews: [
+      {
+        name: "Chinedu O.",
+        rating: 5,
+        comment: "Perfect agbada for special occasions, fits well and the embroidery is exquisite."
+      }
+    ]
+  }
 ];
+
 export const luxurySlides = [
   {
     id: 1,

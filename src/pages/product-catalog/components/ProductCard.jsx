@@ -20,8 +20,10 @@ const ProductCard = ({ product, onAddToCart, view = 'grid', className = '' }) =>
     }
   };
 
+  // Navigate to product detail page via URL parameters
   const handleViewDetails = () => {
-    navigate('/product-detail', { state: { product } });
+    const slug = product?.name.toLowerCase().replace(/\s+/g, '-');
+    navigate(`/product-detail/${product?.id}/${slug}`);
   };
 
   const formatPrice = (price) =>
@@ -36,10 +38,6 @@ const ProductCard = ({ product, onAddToCart, view = 'grid', className = '' }) =>
         className={i < Math.floor(rating) ? "text-warning fill-current" : "text-muted-foreground"}
       />
     ));
-
-  const discountPercentage = product?.originalPrice
-    ? Math.round(((product?.originalPrice - product?.price) / product?.originalPrice) * 100)
-    : 0;
 
   return (
     <div

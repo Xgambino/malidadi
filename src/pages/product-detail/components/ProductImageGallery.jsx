@@ -73,7 +73,8 @@ const ProductImageGallery = ({ images = [], productName = '' }) => {
   return (
     <div className="space-y-4">
       {/* Main Image Display */}
-      <div className="relative bg-muted rounded-lg overflow-hidden aspect-square">
+      <div className="relative bg-muted rounded-lg overflow-hidden w-full max-w-md mx-auto h-90 md:h-100">
+
         <div 
           ref={imageRef}
           className={`relative w-full h-full cursor-${isZoomed ? 'zoom-out' : 'zoom-in'} transition-transform duration-300`}
@@ -84,15 +85,14 @@ const ProductImageGallery = ({ images = [], productName = '' }) => {
           onTouchEnd={handleTouchEnd}
         >
           <Image
-            src={images?.[currentImageIndex]}
-            alt={`${productName} - Image ${currentImageIndex + 1}`}
-            className={`w-full h-full object-cover transition-transform duration-300 ${
-              isZoomed ? 'scale-150' : 'scale-100'
-            }`}
-            style={isZoomed ? {
-              transformOrigin: `${zoomPosition?.x}% ${zoomPosition?.y}%`
-            } : {}}
-          />
+  src={images?.[currentImageIndex]}
+  alt={`${productName} - Image ${currentImageIndex + 1}`}
+  className={`w-full h-full object-contain transition-transform duration-300 ${
+    isZoomed ? 'scale-150' : 'scale-100'
+  }`}
+  style={isZoomed ? { transformOrigin: `${zoomPosition?.x}% ${zoomPosition?.y}%` } : {}}
+/>
+
           
           {/* Navigation Arrows - Desktop */}
           {images?.length > 1 && (

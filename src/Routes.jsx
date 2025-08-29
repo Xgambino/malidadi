@@ -17,21 +17,29 @@ const Routes = () => {
   return (
     <BrowserRouter>
       <ErrorBoundary>
-      <ScrollToTop />
-      <RouterRoutes>
-        {/* Define your route here */}
-        <Route path="/login" element={<LoginRegister />} />
-        <Route path="/" element={<Homepage />} />
-        <Route path="/shopping-cart" element={<ShoppingCart />} />
-        <Route path="/product-detail" element={<ProductDetail />} />
-        <Route path="/product-catalog" element={<ProductCatalog />} />
-        <Route path="/checkout" element={<CheckoutPage />} />
-        <Route path="/homepage" element={<Homepage />} />
-        <Route path="/admin-dashboard" element={<AdminDashboard />} />
-        <Route path="/product-management" element={<ProductManagement />} />
-        <Route path="/product-form" element={<ProductForm />} />
-        <Route path="*" element={<NotFound />} />
-      </RouterRoutes>
+        <ScrollToTop />
+        <RouterRoutes>
+          {/* Auth & Homepage */}
+          <Route path="/login" element={<LoginRegister />} />
+          <Route path="/" element={<Homepage />} />
+          <Route path="/homepage" element={<Homepage />} />
+
+          {/* Shopping & Checkout */}
+          <Route path="/shopping-cart" element={<ShoppingCart />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/product-catalog" element={<ProductCatalog />} />
+
+          {/* Product Detail - dynamic URL */}
+          <Route path="/product-detail/:id/:slug" element={<ProductDetail />} />
+
+          {/* Admin */}
+          <Route path="/admin-dashboard" element={<AdminDashboard />} />
+          <Route path="/product-management" element={<ProductManagement />} />
+          <Route path="/product-form" element={<ProductForm />} />
+
+          {/* Catch-all */}
+          <Route path="*" element={<NotFound />} />
+        </RouterRoutes>
       </ErrorBoundary>
     </BrowserRouter>
   );
