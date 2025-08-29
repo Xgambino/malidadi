@@ -2,15 +2,10 @@ import React from 'react';
 import ProductCard from './ProductCard';
 import Icon from '../../../components/AppIcon';
 
-const ProductGrid = ({ 
-  products, 
-  onAddToCart, 
-  loading = false, 
-  className = '' 
-}) => {
+const ProductGrid = ({ products, onAddToCart, loading = false, view = 'grid', className = '' }) => {
   if (loading) {
     return (
-      <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 ${className}`}>
+      <div className={`grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 ${className}`}>
         {[...Array(8)]?.map((_, index) => (
           <div key={index} className="bg-surface border border-border rounded-lg overflow-hidden animate-pulse">
             <div className="aspect-square bg-muted" />
@@ -26,7 +21,7 @@ const ProductGrid = ({
     );
   }
 
-  if (!products || products?.length === 0) {
+  if (!products || products.length === 0) {
     return (
       <div className={`flex flex-col items-center justify-center py-16 text-center ${className}`}>
         <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
@@ -40,13 +35,19 @@ const ProductGrid = ({
     );
   }
 
+  const containerClass =
+    view === 'grid'
+      ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6'
+      : 'flex flex-col gap-4';
+
   return (
-    <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 ${className}`}>
-      {products?.map((product) => (
+    <div className={`${containerClass} ${className}`}>
+      {products.map((product) => (
         <ProductCard
-          key={product?.id}
+          key={product.id}
           product={product}
           onAddToCart={onAddToCart}
+          view={view} // pass current view
         />
       ))}
     </div>

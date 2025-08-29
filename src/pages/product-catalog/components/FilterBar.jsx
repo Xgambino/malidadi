@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
 import SortDropdown from './SortDropdown';
@@ -10,13 +10,20 @@ const FilterBar = ({
   onFilterToggle, 
   activeFiltersCount = 0,
   onClearFilters,
+  onViewChange,
+  initialView = 'grid',
   className = '' 
 }) => {
+  const [view, setView] = useState(initialView);
+
+  const handleViewChange = (selectedView) => {
+    setView(selectedView);
+    if (onViewChange) onViewChange(selectedView);
+  };
+
   return (
     <div className={`flex items-center justify-between gap-4 p-4 bg-surface border-b border-border ${className}`}>
-      {/* Left Section - Results Count & Filter Button */}
       <div className="flex items-center space-x-4">
-        {/* Mobile Filter Button */}
         <Button
           variant="outline"
           size="sm"
@@ -34,15 +41,13 @@ const FilterBar = ({
           )}
         </Button>
 
-        {/* Results Count */}
         <div className="text-sm text-muted-foreground">
           <span className="font-medium text-foreground">{totalProducts?.toLocaleString()}</span>
           {' '}products found
         </div>
       </div>
-      {/* Right Section - Active Filters & Sort */}
+
       <div className="flex items-center space-x-3">
-        {/* Active Filters Indicator */}
         {activeFiltersCount > 0 && (
           <div className="hidden sm:flex items-center space-x-2">
             <span className="text-sm text-muted-foreground">
@@ -59,25 +64,25 @@ const FilterBar = ({
           </div>
         )}
 
-        {/* Sort Dropdown */}
         <SortDropdown
           currentSort={currentSort}
           onSortChange={onSortChange}
         />
 
-        {/* View Toggle (Future Enhancement) */}
         <div className="hidden lg:flex items-center border border-border rounded-lg overflow-hidden">
           <Button
-            variant="ghost"
+            variant={view === 'grid' ? 'default' : 'ghost'}
             size="icon"
             className="rounded-none border-r border-border bg-muted"
+            onClick={() => handleViewChange('grid')}
           >
             <Icon name="Grid3X3" size={16} />
           </Button>
           <Button
-            variant="ghost"
+            variant={view === 'list' ? 'default' : 'ghost'}
             size="icon"
             className="rounded-none"
+            onClick={() => handleViewChange('list')}
           >
             <Icon name="List" size={16} />
           </Button>

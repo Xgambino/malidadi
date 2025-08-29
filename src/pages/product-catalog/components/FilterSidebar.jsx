@@ -1,71 +1,71 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
 import { Checkbox } from '../../../components/ui/Checkbox';
+import { products } from '../../../data/db.jsx';
 
-const FilterSidebar = ({ 
-  filters, 
-  onFilterChange, 
-  onClearFilters, 
-  isOpen, 
-  onClose,
-  className = '' 
-}) => {
+const FilterSidebar = ({ filters, onFilterChange, onClearFilters, isOpen, onClose, className = '' }) => {
   const [expandedSections, setExpandedSections] = useState({
-    category: true,
+    generalCategory: true,
+    specificCategory: true,
     price: true,
     brand: true,
-    rating: true
+    rating: true,
   });
 
   const toggleSection = (section) => {
-    setExpandedSections(prev => ({
-      ...prev,
-      [section]: !prev?.[section]
-    }));
+    setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
   };
 
   const handleCategoryChange = (categoryId, checked) => {
     const updatedCategories = checked 
       ? [...filters?.categories, categoryId]
       : filters?.categories?.filter(id => id !== categoryId);
-    
     onFilterChange({ ...filters, categories: updatedCategories });
   };
 
-  const handleBrandChange = (brandId, checked) => {
+  const handleBrandChange = (brandLabel, checked) => {
     const updatedBrands = checked 
-      ? [...filters?.brands, brandId]
-      : filters?.brands?.filter(id => id !== brandId);
-    
+      ? [...filters?.brands, brandLabel]
+      : filters?.brands?.filter(label => label !== brandLabel);
     onFilterChange({ ...filters, brands: updatedBrands });
   };
 
-  const handlePriceChange = (priceRange) => {
-    onFilterChange({ ...filters, priceRange });
-  };
+  const handlePriceChange = (priceRange) => onFilterChange({ ...filters, priceRange });
+  const handleRatingChange = (rating) => onFilterChange({ ...filters, minRating: rating });
 
-  const handleRatingChange = (rating) => {
-    onFilterChange({ ...filters, minRating: rating });
-  };
+  // General categories: Men, Women, Kids
+  const generalCategories = useMemo(() => {
+    const counts = { Men: 0, Women: 0, Kids: 0 };
+    products.forEach(p => {
+      if (p.categories.includes("Men")) counts.Men += 1;
+      if (p.categories.includes("Women")) counts.Women += 1;
+      if (p.categories.includes("Kids")) counts.Kids += 1;
+    });
+    return Object.entries(counts).map(([label, count]) => ({ id: label, label, count }));
+  }, []);
 
-  const categories = [
-    { id: 'electronics', label: 'Electronics', count: 45 },
-    { id: 'clothing', label: 'Clothing', count: 32 },
-    { id: 'home-garden', label: 'Home & Garden', count: 28 },
-    { id: 'sports', label: 'Sports & Outdoors', count: 19 },
-    { id: 'books', label: 'Books', count: 15 },
-    { id: 'beauty', label: 'Beauty & Personal Care', count: 22 }
-  ];
+  // Specific product categories (excluding Men, Women, Kids)
+  const specificCategories = useMemo(() => {
+    const counts = {};
+    products.forEach(p => {
+      p.categories.forEach(cat => {
+        if (!["Men", "Women", "Kids"].includes(cat)) {
+          counts[cat] = (counts[cat] || 0) + 1;
+        }
+      });
+    });
+    return Object.entries(counts).map(([label, count]) => ({ id: label, label, count }));
+  }, []);
 
-  const brands = [
-    { id: 'apple', label: 'Apple', count: 12 },
-    { id: 'samsung', label: 'Samsung', count: 8 },
-    { id: 'nike', label: 'Nike', count: 15 },
-    { id: 'adidas', label: 'Adidas', count: 11 },
-    { id: 'sony', label: 'Sony', count: 9 },
-    { id: 'lg', label: 'LG', count: 6 }
-  ];
+  // Brands dynamically from products
+  const brands = useMemo(() => {
+    const counts = {};
+    products.forEach(p => {
+      counts[p.brand] = (counts[p.brand] || 0) + 1;
+    });
+    return Object.entries(counts).map(([label, count]) => ({ id: label, label, count }));
+  }, []);
 
   const priceRanges = [
     { id: 'under-25', label: 'Under $25', min: 0, max: 25 },
@@ -84,16 +84,9 @@ const FilterSidebar = ({
         className="flex items-center justify-between w-full text-left text-sm font-medium text-foreground hover:text-primary transition-colors duration-200"
       >
         <span>{title}</span>
-        <Icon 
-          name={expandedSections?.[sectionKey] ? "ChevronUp" : "ChevronDown"} 
-          size={16} 
-        />
+        <Icon name={expandedSections?.[sectionKey] ? "ChevronUp" : "ChevronDown"} size={16} />
       </button>
-      {expandedSections?.[sectionKey] && (
-        <div className="mt-3 space-y-2">
-          {children}
-        </div>
-      )}
+      {expandedSections?.[sectionKey] && <div className="mt-3 space-y-2">{children}</div>}
     </div>
   );
 
@@ -124,9 +117,26 @@ const FilterSidebar = ({
 
       {/* Filter Content */}
       <div className="flex-1 overflow-y-auto p-4">
-        {/* Categories */}
-        <FilterSection title="Categories" sectionKey="category">
-          {categories?.map(category => (
+        {/* General Categories */}
+        <FilterSection title="General Categories" sectionKey="generalCategory">
+          {generalCategories?.map(category => (
+            <Checkbox
+              key={category?.id}
+              label={
+                <div className="flex items-center justify-between w-full">
+                  <span>{category?.label}</span>
+                  <span className="text-xs text-muted-foreground">({category?.count})</span>
+                </div>
+              }
+              checked={filters?.categories?.includes(category?.id)}
+              onChange={(e) => handleCategoryChange(category?.id, e?.target?.checked)}
+            />
+          ))}
+        </FilterSection>
+
+        {/* Specific Categories */}
+        <FilterSection title="Product Categories" sectionKey="specificCategory">
+          {specificCategories?.map(category => (
             <Checkbox
               key={category?.id}
               label={
@@ -164,8 +174,8 @@ const FilterSidebar = ({
                   <span className="text-xs text-muted-foreground">({brand?.count})</span>
                 </div>
               }
-              checked={filters?.brands?.includes(brand?.id)}
-              onChange={(e) => handleBrandChange(brand?.id, e?.target?.checked)}
+              checked={filters?.brands?.includes(brand?.label)}
+              onChange={(e) => handleBrandChange(brand?.label, e?.target?.checked)}
             />
           ))}
         </FilterSection>

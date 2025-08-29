@@ -63,7 +63,7 @@ const Homepage = () => {
   };
 
   window.addEventListener("scroll", handleScroll, { passive: true });
-  handleScroll(); // initialize
+  handleScroll();
 
   return () => window.removeEventListener("scroll", handleScroll);
 }, []);
