@@ -5,15 +5,22 @@ import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
 import SocialLogin from './components/SocialLogin';
 import ForgotPassword from './components/ForgotPassword';
+import { admin } from '../../data/db';
 
 const LoginRegister = () => {
   const [activeTab, setActiveTab] = useState('login');
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const navigate = useNavigate();
 
-  const handleSuccessfulAuth = () => {
+  const handleSuccessfulAuth = (user) => {
+  if (user?.email === admin.email && user?.password === admin.password) {
+    localStorage.setItem('adminAuthenticated', 'true'); // ✅ reuse admin login flag
+    navigate('/admin-dashboard');
+  } else {
     navigate('/homepage');
-  };
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -58,7 +65,8 @@ const LoginRegister = () => {
               {/* Forms */}
               {activeTab === 'login' ? (
                 <LoginForm
-                  onSuccess={handleSuccessfulAuth}
+                  // After successful login
+                  onSuccess={({ email, password }) => handleSuccessfulAuth({ email, password })}
                   onForgotPassword={() => setShowForgotPassword(true)}
                 />
               ) : (

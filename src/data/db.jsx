@@ -289,3 +289,106 @@ export const luxurySlides = [
     bgGradient: "from-black via-red-900 to-black",
   },
 ];
+
+export const admin = {
+    email: 'malidadi@gmail.com',
+    password: 'MALIDADI2025?'
+  };
+// db.jsx
+// db.jsx
+export const customer = {
+  id: 1,
+  name: "Customer A",
+  email: "customer@gmail.com",
+  password: "123",
+
+  // Shipping Information
+  shippingInfo: {
+    firstName: "John",
+    lastName: "Doe",
+    email: "customer@gmail.com",
+    address: "123 Main Street",
+    city: "Nairobi",
+    state: "Nairobi County",
+    zipCode: "00100",
+    country: "Kenya"
+  },
+
+  // Payment Information
+  paymentInfo: {
+    cardNumber: "4111111111111111",
+    cardName: "John Doe",
+    expiryMonth: "12",
+    expiryYear: "2027",
+    cvv: "123",
+    sameAsShipping: true
+  },
+
+  // Cart Items
+  cartItems: [
+    {
+      id: 1,
+      name: "Beaded Necklace",
+      description:
+        "A stunning Maasai-inspired necklace, meticulously handcrafted using vibrant recycled beads and brass accents. Each piece tells a story of tradition and artistry, making it not only a fashion accessory but also a cultural statement.",
+      brand: "Maasai Creations",
+      price: 2500,
+      originalPrice: 3000,
+      image:
+        "https://c8.alamy.com/comp/ARB0BC/maasai-necklace-detail-hand-beaded-maasi-mara-kenya-ARB0BC.jpg",
+      rating: 4.7,
+      reviewCount: 189,
+      categories: ["African Inspired Jewellery", "Women"],
+      stock: 12,
+      isNew: true,
+      inStock: true,
+      isOnSale: true,
+      quantity: 1,
+      reviews: [
+        {
+          name: "Amina K.",
+          rating: 5,
+          comment:
+            "Absolutely love this necklace! The craftsmanship is amazing and it adds a beautiful pop of color to any outfit."
+        }
+      ]
+    }
+  ],
+
+  // Orders (one item, full product schema)
+  orders: [
+    {
+      orderId: 1001,
+      date: "2025-08-28",
+      status: "Confirmed",
+      total: 3500,
+      item: {
+        id: 2,
+        name: "Leather Sandals",
+        description:
+          "Handcrafted leather sandals designed for comfort and durability. Made with locally sourced leather and traditional stitching techniques.",
+        brand: "Safari Footwear",
+        price: 3500,
+        originalPrice: 4000,
+        image:
+          "https://images.unsplash.com/photo-1600180758895-68b3bc2f1e4e?w=300&h=300&fit=crop",
+        rating: 4.5,
+        reviewCount: 97,
+        categories: ["Footwear", "Unisex"],
+        stock: 8,
+        isNew: false,
+        inStock: true,
+        isOnSale: true,
+        quantity: 1,
+        reviews: [
+          {
+            name: "David M.",
+            rating: 4,
+            comment:
+              "Very comfortable and stylish. Slightly snug at first but they stretched nicely."
+          }
+        ]
+      }
+    }
+  ]
+};

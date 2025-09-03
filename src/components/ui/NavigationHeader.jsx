@@ -127,7 +127,7 @@ const NavigationHeader = ({ cartCount = 0, currentUser = null, onSearchSubmit = 
               <div className="relative group">
                 <CartIndicator 
                   itemCount={cartCount} 
-                  onClick={() => window.location.href = '/shopping-cart'}
+                  onClick={() => window.location.href = '/checkout'}
                   className="hover:scale-110 transition-transform duration-300"
                 />
               </div>

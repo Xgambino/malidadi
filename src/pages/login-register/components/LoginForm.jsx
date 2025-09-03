@@ -48,24 +48,25 @@ const LoginForm = ({ onSuccess, onForgotPassword }) => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!validateForm()) return;
-    
-    setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      if (formData.email === mockCredentials.email && formData.password === mockCredentials.password) {
-        onSuccess();
-      } else {
-        setErrors({
-          general: `Invalid credentials. Use email: ${mockCredentials.email} and password: ${mockCredentials.password}`
-        });
-      }
-      setIsLoading(false);
-    }, 1000);
-  };
+  e.preventDefault();
+
+  if (!validateForm()) return;
+
+  setIsLoading(true);
+
+  // Simulate API call
+  setTimeout(() => {
+    if (formData.email && formData.password) {
+      onSuccess({ email: formData.email, password: formData.password });
+    } else {
+      setErrors({
+        general: "Invalid credentials. Please try again."
+      });
+    }
+    setIsLoading(false);
+  }, 1000);
+};
+
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -93,7 +94,7 @@ const LoginForm = ({ onSuccess, onForgotPassword }) => {
             name="email"
             value={formData.email}
             onChange={handleInputChange}
-            className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-smooth ${
+            className={`w-full px-4 py-3 border rounded-lg focus:outline-none text-black focus:ring-2 focus:ring-primary focus:border-transparent transition-smooth ${
               errors.email ? 'border-error-500' : 'border-border'
             }`}
             placeholder="Enter your email"
@@ -121,7 +122,7 @@ const LoginForm = ({ onSuccess, onForgotPassword }) => {
             name="password"
             value={formData.password}
             onChange={handleInputChange}
-            className={`w-full px-4 py-3 pr-12 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-smooth ${
+            className={`w-full px-4 py-3 pr-12  text-black border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-smooth ${
               errors.password ? 'border-error-500' : 'border-border'
             }`}
             placeholder="Enter your password"
