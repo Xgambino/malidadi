@@ -295,7 +295,7 @@ export const admin = {
     password: 'MALIDADI2025?'
   };
 // db.jsx
-// db.jsx
+
 export const customer = {
   id: 1,
   name: "Customer A",

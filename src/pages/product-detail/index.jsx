@@ -13,7 +13,7 @@ const ProductDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams(); // For direct URL linking
 
-  const [cartCount, setCartCount] = useState(3);
+  const [cartCount, setCartCount] = useState(0);
   const [selectedVariant, setSelectedVariant] = useState({});
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
@@ -34,31 +34,52 @@ const ProductDetail = () => {
     setSelectedVariant({});
     setQuantity(1);
     window.scrollTo(0, 0);
+
+    // Load cart count from localStorage
+    const existingCart = JSON.parse(localStorage.getItem("cartItems")) || [];
+    const totalItems = existingCart.reduce((sum, item) => sum + item.quantity, 0);
+    setCartCount(totalItems);
   }, [currentProduct]);
 
   const handleAddToCart = () => {
     if (!currentProduct?.inStock || currentProduct?.stock === 0) return;
 
-    setCartCount((prev) => prev + quantity);
+    const existingCart = JSON.parse(localStorage.getItem("cartItems")) || [];
+    const existingIndex = existingCart.findIndex(item => item.id === currentProduct.id);
+
+    if (existingIndex !== -1) {
+      existingCart[existingIndex].quantity += quantity;
+    } else {
+      existingCart.push({
+        ...currentProduct,
+        selectedVariant,
+        quantity,
+      });
+    }
+
+    localStorage.setItem("cartItems", JSON.stringify(existingCart));
+    const totalItems = existingCart.reduce((sum, item) => sum + item.quantity, 0);
+    setCartCount(totalItems);
+
     console.log(`Added ${quantity} ${currentProduct?.name} to cart`);
   };
 
   const handleBuyNow = () => {
     if (!currentProduct?.inStock || currentProduct?.stock === 0) return;
 
-    setCartCount((prev) => prev + quantity);
-
-    navigate('/checkout', {
-      state: {
-        items: [
-          {
-            ...currentProduct,
-            selectedVariant,
-            quantity,
-          },
-        ],
+    const newCart = [
+      {
+        ...currentProduct,
+        selectedVariant,
+        quantity,
       },
-    });
+    ];
+    localStorage.setItem("cartItems", JSON.stringify(newCart));
+
+    const totalItems = newCart.reduce((sum, item) => sum + item.quantity, 0);
+    setCartCount(totalItems);
+
+    navigate('/checkout', { state: { items: newCart } });
   };
 
   const handleSearchSubmit = (query) => {

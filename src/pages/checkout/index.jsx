@@ -21,11 +21,15 @@ const CheckoutPage = () => {
     ...customer.paymentInfo,
   });
 
-  // ✅ Cart items directly from db.jsx
-  const [cartItems] = useState(customer.cartItems);
+  // ✅ Load cart items from localStorage
+  const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
-    // Scroll to top when step changes
+    const storedCart = JSON.parse(localStorage.getItem("cartItems")) || [];
+    setCartItems(storedCart);
+  }, []);
+
+  useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [currentStep]);
 
@@ -38,27 +42,34 @@ const CheckoutPage = () => {
   };
 
   const handlePlaceOrder = () => {
-    // Simulate order placement
     alert(
       `Order placed successfully!\n\nOrder Details:\nName: ${formData?.firstName} ${formData?.lastName}\nEmail: ${formData?.email}\nTotal Items: ${cartItems?.length}\n\nThank you for your purchase!`
     );
+
+    // ✅ Clear cart after placing order
+    localStorage.removeItem("cartItems");
     navigate("/homepage");
   };
+
+  const handleClearCart = () => {
+  setCartItems([]); // clear state
+  localStorage.removeItem("cartItems"); // clear localStorage
+  window.location.reload(); // ✅ refresh the website
+};
 
   return (
     <div className="min-h-screen bg-background">
       <NavigationHeader />
 
       <div className="container mx-auto px-4 md:px-6 lg:px-8 py-8 pt-20">
-        {/* Progress Indicator - Mobile and Desktop */}
+        {/* Progress Indicator */}
         <div className="max-w-2xl mx-auto lg:max-w-none mb-8">
           <ProgressIndicator currentStep={currentStep} totalSteps={3} />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-          {/* Main Content - Forms */}
+          {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Mobile Step Navigation */}
             <div className="lg:hidden">
               <div className="flex items-center justify-between mb-4">
                 <h1 className="text-2xl font-bold text-foreground">
@@ -72,7 +83,6 @@ const CheckoutPage = () => {
               </div>
             </div>
 
-            {/* Desktop Title */}
             <div className="hidden lg:block">
               <h1 className="text-3xl font-bold text-foreground mb-2">
                 Checkout
@@ -82,7 +92,6 @@ const CheckoutPage = () => {
               </p>
             </div>
 
-            {/* Form Steps */}
             <ShippingForm
               onNext={handleNextStep}
               formData={formData}
@@ -102,15 +111,18 @@ const CheckoutPage = () => {
               onBack={handlePrevStep}
               onPlaceOrder={handlePlaceOrder}
               formData={formData}
-              cartItems={cartItems} // ✅ pass customer cart items
+              cartItems={cartItems}
               isVisible={currentStep === 3}
             />
           </div>
 
-          {/* Sidebar - Order Summary */}
+          {/* Sidebar */}
           <div className="lg:col-span-1">
             <div className="sticky top-8">
-              <OrderSummary cartItems={cartItems} />
+              <OrderSummary
+                cartItems={cartItems}
+                onClearCart={handleClearCart}
+              />
 
               {/* Trust Signals */}
               <div className="mt-6 space-y-4">

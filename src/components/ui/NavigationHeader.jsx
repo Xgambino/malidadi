@@ -1,14 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Icon from '../AppIcon';
 import SearchBar from './SearchBar';
 import CartIndicator from './CartIndicator';
 
-const NavigationHeader = ({ cartCount = 0, currentUser = null, onSearchSubmit = () => {} }) => {
+const NavigationHeader = ({ currentUser: propUser = null, onSearchSubmit = () => {} }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
+  const [user, setUser] = useState(null);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const location = useLocation();
+  const profileRef = useRef(null);
 
   const menuItems = [
     { label: 'Home', path: '/homepage', icon: 'Home' },
@@ -26,26 +30,79 @@ const NavigationHeader = ({ cartCount = 0, currentUser = null, onSearchSubmit = 
     return location.pathname === path;
   };
 
+  // ✅ Track scroll
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
+  // ✅ Sync cart count (still in localStorage since it’s cart)
+  useEffect(() => {
+    const updateCartCount = () => {
+      try {
+        const storedCart = JSON.parse(localStorage.getItem('cartItems')) || [];
+        const totalItems = storedCart.reduce((sum, item) => sum + (item.quantity || 0), 0);
+        setCartCount(totalItems);
+      } catch {
+        setCartCount(0);
+      }
+    };
+    updateCartCount();
+    window.addEventListener('storage', updateCartCount);
+    window.addEventListener('cartUpdated', updateCartCount);
+    return () => {
+      window.removeEventListener('storage', updateCartCount);
+      window.removeEventListener('cartUpdated', updateCartCount);
+    };
+  }, []);
 
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
-  };
+  // ✅ Load logged-in user from sessionStorage (prop fallback)
+  useEffect(() => {
+    if (propUser) {
+      setUser(propUser);
+    } else {
+      try {
+        const stored = JSON.parse(sessionStorage.getItem('currentUser'));
+        if (stored) setUser(stored);
+      } catch {
+        setUser(null);
+      }
+    }
+  }, [propUser]);
 
-  const toggleSearch = () => {
-    setIsSearchOpen(!isSearchOpen);
-  };
+  // ✅ Listen for login/logout updates
+  useEffect(() => {
+    const handleUserUpdated = (e) => {
+      if (e.detail !== undefined) {
+        setUser(e.detail);
+      } else {
+        try {
+          const stored = JSON.parse(sessionStorage.getItem('currentUser'));
+          setUser(stored);
+        } catch {
+          setUser(null);
+        }
+      }
+    };
+    window.addEventListener('userUpdated', handleUserUpdated);
+    return () => window.removeEventListener('userUpdated', handleUserUpdated);
+  }, []);
+
+  // ✅ Close profile dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (isProfileOpen && profileRef.current && !profileRef.current.contains(e.target)) {
+        setIsProfileOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isProfileOpen]);
+
+  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+  const closeMobileMenu = () => setIsMobileMenuOpen(false);
+  const toggleSearch = () => setIsSearchOpen(!isSearchOpen);
 
   useEffect(() => {
     const handleResize = () => {
@@ -54,89 +111,108 @@ const NavigationHeader = ({ cartCount = 0, currentUser = null, onSearchSubmit = 
         setIsSearchOpen(false);
       }
     };
-
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
+    document.body.style.overflow = isMobileMenuOpen ? 'hidden' : 'unset';
+    return () => { document.body.style.overflow = 'unset'; };
   }, [isMobileMenuOpen]);
+
+  // ✅ Sign out (clear session)
+  const handleSignOut = () => {
+    sessionStorage.removeItem('currentUser');
+    setUser(null);
+    window.dispatchEvent(new CustomEvent('userUpdated', { detail: null }));
+    window.location.href = '/login';
+  };
 
   return (
     <>
       <header className={`fixed top-0 z-50 w-full transition-all duration-500 ${
-        isScrolled 
-          ? 'backdrop-luxury shadow-luxury' 
-          : 'bg-transparent'
+        isScrolled ? 'backdrop-luxury shadow-luxury' : 'bg-transparent'
       }`}>
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
-            {/* Malidadi Logo */}
-            <Link 
-              to="/homepage" 
-              className="flex items-center space-x-3 group transition-all duration-300"
-              onClick={closeMobileMenu}
-            >
+            {/* Logo */}
+            <Link to="/homepage" className="flex items-center space-x-3 group transition-all duration-300" onClick={closeMobileMenu}>
               <div className="w-[190px] h-[auto] rounded-lg overflow-hidden group-hover:scale-110 transition-transform duration-300">
-  <img 
-    src="/assets/images/logoi.png" 
-    alt="Malidadi Logo" 
-    className="w-full h-full object-contain"
-  />
-</div>
-
+                <img src="/assets/images/logoi.png" alt="Malidadi Logo" className="w-full h-full object-contain" />
+              </div>
             </Link>
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-12">
-              {menuItems?.slice(0, 2)?.map((item) => (
+              {menuItems.slice(0, 2).map((item) => (
                 <Link
-                  key={item?.path}
-                  to={item?.path}
+                  key={item.path}
+                  to={item.path}
                   className={`relative flex items-center space-x-2 px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 group ${
-                    isActiveRoute(item?.path)
-                      ? 'text-primary bg-primary/10 shadow-md' 
+                    isActiveRoute(item.path)
+                      ? 'text-primary bg-primary/10 shadow-md'
                       : 'text-foreground hover:text-primary hover:bg-primary/5'
                   }`}
                 >
-                  <Icon name={item?.icon} size={18} />
-                  <span className="font-luxury">{item?.label}</span>
+                  <Icon name={item.icon} size={18} />
+                  <span className="font-luxury">{item.label}</span>
                   <div className="absolute inset-0 rounded-full border border-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </Link>
               ))}
             </nav>
 
-            {/* Desktop Search Bar */}
+            {/* Desktop Search */}
             <div className="hidden md:block flex-1 max-w-md mx-8">
-              <div className="relative">
-                <SearchBar onSearch={onSearchSubmit} className="bg-surface/50 backdrop-blur-sm border-primary/20 focus-within:border-primary/40 rounded-full" />
-              </div>
+              <SearchBar onSearch={onSearchSubmit} className="bg-surface/50 backdrop-blur-sm border-primary/20 focus-within:border-primary/40 rounded-full" />
             </div>
 
             {/* Desktop Actions */}
             <div className="hidden md:flex items-center space-x-6">
-              <div className="relative group">
-                <CartIndicator 
-                  itemCount={cartCount} 
-                  onClick={() => window.location.href = '/checkout'}
-                  className="hover:scale-110 transition-transform duration-300"
-                />
-              </div>
-              {currentUser ? (
-                <div className="flex items-center space-x-3 px-4 py-2 rounded-full bg-surface/20 backdrop-blur-sm border border-primary/20">
-                  <div className="w-8 h-8 bg-gradient-to-br from-primary to-yellow-400 rounded-full flex items-center justify-center">
-                    <Icon name="User" size={16} color="black" />
-                  </div>
-                  <span className="text-sm font-luxury text-foreground">Welcome, {currentUser?.name}</span>
+              <CartIndicator
+                itemCount={cartCount}
+                onClick={() => (window.location.href = '/checkout')}
+                className="hover:scale-110 transition-transform duration-300"
+              />
+
+              {user ? (
+                <div className="relative" ref={profileRef}>
+                  <button
+                    onClick={() => setIsProfileOpen(!isProfileOpen)}
+                    className="flex items-center space-x-3 px-4 py-2 rounded-full bg-surface/20 backdrop-blur-sm border border-primary/20 hover:bg-surface/40 transition-all duration-300"
+                  >
+                    <div className="w-8 h-8 bg-gradient-to-br from-primary to-yellow-400 rounded-full flex items-center justify-center">
+                      <Icon name="User" size={16} color="black" />
+                    </div>
+                    <span className="text-sm font-luxury text-foreground">
+                      {user?.name || user?.email}
+                    </span>
+                    <Icon name={isProfileOpen ? 'ChevronUp' : 'ChevronDown'} size={16} />
+                  </button>
+
+                  {isProfileOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-surface/95 backdrop-blur-sm border border-primary/20 rounded-xl shadow-lg">
+                      <Link
+                        to="/profile"
+                        onClick={() => setIsProfileOpen(false)}
+                        className="block px-4 py-2 text-sm text-foreground hover:bg-primary/10 hover:text-primary"
+                      >
+                        Profile
+                      </Link>
+                      <Link
+                        to="/orders"
+                        onClick={() => setIsProfileOpen(false)}
+                        className="block px-4 py-2 text-sm text-foreground hover:bg-primary/10 hover:text-primary"
+                      >
+                        My Orders
+                      </Link>
+                      <button
+                        onClick={handleSignOut}
+                        className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-100"
+                      >
+                        Sign Out
+                      </button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <Link
@@ -147,96 +223,9 @@ const NavigationHeader = ({ cartCount = 0, currentUser = null, onSearchSubmit = 
                 </Link>
               )}
             </div>
-
-            {/* Mobile Actions */}
-            <div className="flex md:hidden items-center space-x-4">
-              <button
-                onClick={toggleSearch}
-                className="p-2 text-foreground hover:text-primary transition-colors duration-300 hover:bg-primary/10 rounded-full"
-                aria-label="Search"
-              >
-                <Icon name="Search" size={20} />
-              </button>
-              
-              <CartIndicator 
-                itemCount={cartCount} 
-                onClick={() => window.location.href = '/shopping-cart'} 
-                className="hover:scale-110 transition-transform duration-300"
-              />
-
-              <button
-                onClick={toggleMobileMenu}
-                className="p-2 text-foreground hover:text-primary transition-colors duration-300 hover:bg-primary/10 rounded-full"
-                aria-label="Menu"
-              >
-                <Icon name={isMobileMenuOpen ? "X" : "Menu"} size={20} />
-              </button>
-            </div>
           </div>
         </div>
-
-        {/* Mobile Search Overlay */}
-        {isSearchOpen && (
-          <div className="md:hidden absolute top-full left-0 right-0 backdrop-luxury border-t border-primary/20 z-40">
-            <div className="container mx-auto px-4 py-6">
-              <SearchBar 
-                onSearch={(query) => {
-                  onSearchSubmit(query);
-                  setIsSearchOpen(false);
-                }} 
-                autoFocus
-                className="bg-surface/30 backdrop-blur-sm border-primary/30 focus-within:border-primary/50 rounded-full"
-              />
-            </div>
-          </div>
-        )}
       </header>
-
-      {/* Mobile Menu Overlay */}
-      {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-40 md:hidden">
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={closeMobileMenu} />
-          <div className="fixed top-20 right-0 bottom-0 w-80 backdrop-luxury border-l border-primary/20 overflow-y-auto">
-            <nav className="p-6 space-y-4">
-              {menuItems?.map((item) => (
-                <Link
-                  key={item?.path}
-                  to={item?.path}
-                  onClick={closeMobileMenu}
-                  className={`flex items-center space-x-4 px-6 py-4 rounded-2xl text-sm font-luxury font-medium transition-all duration-300 ${
-                    isActiveRoute(item?.path)
-                      ? 'text-primary bg-primary/10 shadow-md border border-primary/20' 
-                      : 'text-foreground hover:text-primary hover:bg-primary/5'
-                  }`}
-                >
-                  <Icon name={item?.icon} size={22} />
-                  <span>{item?.label}</span>
-                </Link>
-              ))}
-              
-              <div className="border-t border-primary/20 pt-6 mt-6">
-                {currentUser ? (
-                  <div className="flex items-center space-x-4 px-6 py-4 rounded-2xl bg-surface/20 border border-primary/20">
-                    <div className="w-10 h-10 bg-gradient-to-br from-primary to-yellow-400 rounded-full flex items-center justify-center">
-                      <Icon name="User" size={20} color="black" />
-                    </div>
-                    <span className="text-sm font-luxury text-foreground">Welcome, {currentUser?.name}</span>
-                  </div>
-                ) : (
-                  <Link
-                    to="/login"
-                    onClick={closeMobileMenu}
-                    className="flex items-center justify-center space-x-3 px-6 py-4 rounded-2xl bg-gradient-to-r from-primary to-yellow-400 text-black font-luxury font-semibold transition-all duration-300 hover:shadow-luxury"
-                  >
-                    <Icon name="LogIn" size={20} />
-                    <span>Sign In</span>
-                  </Link>
-                )}
-              </div>
-            </nav>
-          </div>
-        </div>
-      )}
     </>
   );
 };

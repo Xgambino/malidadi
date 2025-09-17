@@ -10,15 +10,19 @@ const ProductCard = ({ product, onAddToCart, view = 'grid', className = '' }) =>
   const navigate = useNavigate();
 
   const handleAddToCart = async (e) => {
-    e?.stopPropagation();
-    setIsLoading(true);
-    try {
-      await onAddToCart(product);
-      setTimeout(() => setIsLoading(false), 500);
-    } catch (error) {
+  e?.stopPropagation();
+  setIsLoading(true);
+  try {
+    await onAddToCart(product);
+    setTimeout(() => {
       setIsLoading(false);
-    }
-  };
+      navigate("/checkout"); // ✅ redirect to checkout
+    }, 500);
+  } catch (error) {
+    setIsLoading(false);
+  }
+};
+
 
   // Navigate to product detail page via URL parameters
   const handleViewDetails = () => {
